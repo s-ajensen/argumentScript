@@ -1,5 +1,5 @@
 all: ArgumentScript.g4
-	antlrPython
+	antlr4
 
 clean:
 	rm ArgumentScript.interp
