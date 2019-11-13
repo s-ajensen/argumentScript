@@ -4,17 +4,31 @@ grammar ArgumentScript;
  * Parser Rules
  */
 
-file                : definition NEWLINE+ argument NEWLINE+ assertion NEWLINE*;
+file                : definition NEWLINE* argument NEWLINE* assertion NEWLINE*;
 definition          : DEFHEADER (TERM NEWLINE)+ DEFFOOTER;
-argument            : ARGHEADER (proposition NEWLINE)+ ARGFOOTER;
-assertion           : ASRTHEADER (OPERATOR TERM)+ ASRTFOOTER;
+argument            : ARGHEADER (OPERATOR? proposition NEWLINE)+ ARGFOOTER;
+assertion           : ASRTHEADER (OPERATOR? TERM NEWLINE)+ ASRTFOOTER;
 proposition         : TERM
-                    | proposition OPERATOR proposition
+                    | proposition OPERATOR proposition?
                     | '(' proposition ')';
 
 /*
  * Lexer Rules
  */
+
+TERM                : '"' [a-zA-Z ]+ '"';
+DEFHEADER           : '#DEF\n';
+DEFFOOTER           : '#END_DEF\n';
+ARGHEADER           : '#ARG\n';
+ARGFOOTER           : '#END_ARG\n';
+ASRTHEADER          : '#ASRT\n';
+ASRTFOOTER          : '#END_ASRT';
+
+NEWLINE             : ('\r'? '\n' | '\r');
+
+OPERATOR            : ('~' | '&' | '|' | '->');
+
+WS  :   (' '|'\t')+ { skip(); };
 
 fragment POUND      : '#';
 fragment UNDERSCORE : '_';
@@ -27,16 +41,4 @@ fragment G          : 'G';
 fragment S          : 'S';
 fragment T          : 'T';
 fragment N          : 'N';
-
-DEFHEADER           : POUND D E F;
-DEFFOOTER           : POUND E N D UNDERSCORE D E F;
-ARGHEADER           : POUND A R G;
-ARGFOOTER           : POUND E N D UNDERSCORE A R G;
-ASRTHEADER          : POUND A S R T;
-ASRTFOOTER          : POUND E N D UNDERSCORE A S R T;
-
-NEWLINE             : ('\r'? '\n' | '\r');
-
-OPERATOR            : ('~' | '&' | '|' | '->');
-
-TERM                : '"' [a-z]+ '"';
+fragment DQUOTE     : '"';
