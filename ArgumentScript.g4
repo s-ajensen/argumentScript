@@ -5,9 +5,9 @@ grammar ArgumentScript;
  */
 
 file                : definition NEWLINE* argument NEWLINE* assertion NEWLINE*;
-definition          : DEFHEADER (TERM NEWLINE)+ DEFFOOTER;
-argument            : ARGHEADER (OPERATOR? proposition NEWLINE)+ ARGFOOTER;
-assertion           : ASRTHEADER (OPERATOR? TERM NEWLINE)+ ASRTFOOTER;
+definition          : DEFHEADER NEWLINE+ (TERM NEWLINE)* DEFFOOTER NEWLINE+;
+argument            : ARGHEADER NEWLINE+ (OPERATOR? proposition NEWLINE)* ARGFOOTER NEWLINE+;
+assertion           : ASRTHEADER NEWLINE+ (OPERATOR? TERM NEWLINE)* ASRTFOOTER NEWLINE*;
 proposition         : TERM
                     | proposition OPERATOR proposition?
                     | '(' proposition ')';
@@ -17,11 +17,11 @@ proposition         : TERM
  */
 
 TERM                : '"' [a-zA-Z ]+ '"';
-DEFHEADER           : '#DEF\n';
-DEFFOOTER           : '#END_DEF\n';
-ARGHEADER           : '#ARG\n';
-ARGFOOTER           : '#END_ARG\n';
-ASRTHEADER          : '#ASRT\n';
+DEFHEADER           : '#DEF';
+DEFFOOTER           : '#END_DEF';
+ARGHEADER           : '#ARG';
+ARGFOOTER           : '#END_ARG';
+ASRTHEADER          : '#ASRT';
 ASRTFOOTER          : '#END_ASRT';
 
 NEWLINE             : ('\r'? '\n' | '\r');

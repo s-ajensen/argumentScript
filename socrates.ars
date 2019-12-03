@@ -1,0 +1,14 @@
+#DEF
+"Socrates is a man"
+"Socrates is a mortal"
+"Socrates is rational"
+"Socrates is bipedal"
+#END_DEF
+#ARG
+~"Socrates is mortal" -> ~"Socrates is a man"
+~"Socrates is a man" -> ~("Socrates is rational" && "Socrates is bipedal")
+#END_ARG
+#ASRT
+~"Socrates is mortal"
+"Socrates is bipedal"
+#END_ASRT
