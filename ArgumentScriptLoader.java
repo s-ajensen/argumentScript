@@ -1,18 +1,42 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class ArgumentScriptLoader extends ArgumentScriptBaseListener{
+
+    PrintWriter fileWriter = new PrintWriter("Out.java");
+
+    public ArgumentScriptLoader() throws FileNotFoundException {
+    }
+
     @Override
     public void enterFile(ArgumentScriptParser.FileContext ctx) {
-        System.out.println("Found a file: " + ctx.getText());
-        super.enterFile(ctx);
+        fileWriter.println("public class Out {\n" +
+                           "    public static void main(String[] args) {\n");
     }
 
     @Override
     public void exitFile(ArgumentScriptParser.FileContext ctx) {
-        super.exitFile(ctx);
+        fileWriter.println("}}");
+        fileWriter.close();
     }
 
     @Override
     public void enterDefinition(ArgumentScriptParser.DefinitionContext ctx) {
-        super.enterDefinition(ctx);
+        // Create ArrayList of each line in the definition
+        ArrayList<String> defs = new ArrayList<String>(Arrays.asList(ctx.getText().split("\n")));
+        // Remove definition header and footer
+        defs.remove(defs.size() - 1);
+        defs.remove(0);
+        // Output a condensed version of each string to the file as a boolean
+        for(String s:defs) {
+            s = s.replaceAll("\\s","");
+            s = s.replaceAll("\"","");
+            char first = s.charAt(0);
+            fileWriter.println("    boolean " + Character.toLowerCase(first) + s.substring(1,s.length()) + ";");
+        }
+
     }
 
     @Override
