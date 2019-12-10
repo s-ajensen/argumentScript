@@ -6,11 +6,12 @@ grammar ArgumentScript;
 
 file                : definition NEWLINE* argument NEWLINE* assertion NEWLINE*;
 definition          : DEFHEADER NEWLINE+ (TERM NEWLINE)* DEFFOOTER NEWLINE+;
-argument            : ARGHEADER NEWLINE+ (OPERATOR? proposition NEWLINE)* ARGFOOTER NEWLINE+;
+argument            : ARGHEADER NEWLINE+ (proposition NEWLINE)* ARGFOOTER NEWLINE+;
 assertion           : ASRTHEADER NEWLINE+ (OPERATOR? TERM NEWLINE)* ASRTFOOTER NEWLINE*;
 proposition         : TERM
                     | proposition OPERATOR proposition?
-                    | '(' proposition ')';
+                    | '(' proposition ')'
+                    | (OPERATOR proposition);
 
 /*
  * Lexer Rules

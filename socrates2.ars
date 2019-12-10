@@ -1,0 +1,13 @@
+#DEF
+"Socrates is a man"
+"Socrates is a cat"
+"Socrates is mortal"
+#END_DEF
+#ARG
+"Socrates is a man" | "Socrates is a cat"
+"Socrates is a cat" -> "Socrates is mortal"
+"Socrates is a man" -> "Socrates is mortal"
+#END_ARG
+#ASRT
+~"Socrates is a man"
+#END_ASRT

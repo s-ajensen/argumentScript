@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Main {
-    public static String file = "socrates.ars";
+    public static String file = "socrates2.ars";
 
     public static void main(String[] args) {
         try {
