@@ -1,4 +1,3 @@
-import com.sun.jdi.connect.Connector;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -6,14 +5,17 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ArgumentScriptLoader extends ArgumentScriptBaseListener{
 
     PrintWriter fileWriter = new PrintWriter("Out.java");
     // Stores formatted terms after they've been parsed
+    ArrayList<String> terms = new ArrayList<>();
     ArrayList<String> arguments = new ArrayList<>();
 
     public ArgumentScriptLoader() throws FileNotFoundException {
@@ -21,6 +23,14 @@ public class ArgumentScriptLoader extends ArgumentScriptBaseListener{
 
     // Removes quotes and spaces from term
     public String condenseTerm(String term) {
+        ArrayList<String> split = new ArrayList(Arrays.asList(term.split(" ")));
+        term = "";
+        for(int i=0;i<split.size();i++) {
+            split.set(i, (Character.toUpperCase(split.get(i).charAt(0)) +
+                    split.get(i).substring(1,split.get(i).length())));
+            term += split.get(i);
+        }
+
         term = term.replaceAll("\\s", "");
         term = term.replaceAll("\"","");
         char first = term.charAt(0);
@@ -42,6 +52,9 @@ public class ArgumentScriptLoader extends ArgumentScriptBaseListener{
         for(String a:arguments) {
             fileWriter.println(a);
         }
+        for(String t:terms) {
+            fileWriter.println("    System.out.println(\"" + t + "\" + \" = \" + " + t + ");");
+        }
         fileWriter.println("}}");
         fileWriter.close();
     }
@@ -55,7 +68,7 @@ public class ArgumentScriptLoader extends ArgumentScriptBaseListener{
         defs.remove(0);
         // Output a condensed version of each string to the file as a boolean
         for(String s:defs) {
-            //terms.add(this.condenseTerm(s));
+            terms.add(this.condenseTerm(s));
             fileWriter.println("    String " + this.condenseTerm(s) + " = \"unknown\";");
         }
     }
@@ -92,7 +105,7 @@ public class ArgumentScriptLoader extends ArgumentScriptBaseListener{
             } catch(NullPointerException e) {
                 System.out.println("Found a TERM");
             }*/
-            System.out.println(node.getChildCount());
+            //System.out.println(node.getChildCount());
             if(node.getChildCount() == 2) {
                 parseProp(node.getChild(1));
             } else if(node.getChild(1).getText().equals("|")) {
@@ -125,8 +138,9 @@ public class ArgumentScriptLoader extends ArgumentScriptBaseListener{
     @Override
     public void enterArgument(ArgumentScriptParser.ArgumentContext ctx) {
         for(ArgumentScriptParser.PropositionContext p:ctx.proposition()) {
-            System.out.println(this.parseProp(p.getPayload()).getText());
-            System.out.println("-------------");
+            //System.out.println(this.parseProp(p.getPayload()).getText());
+            this.parseProp(p.getPayload()).getText();
+            //System.out.println("-------------");
             //fileWriter.println(parseProp(p));
         }
     }
